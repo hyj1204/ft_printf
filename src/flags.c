@@ -6,14 +6,14 @@
 /*   By: yijhuang <yijhuang@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/23 20:52:05 by yijhuang          #+#    #+#             */
-/*   Updated: 2019/06/07 01:32:38 by yijhuang         ###   ########.fr       */
+/*   Updated: 2019/07/13 22:48:08 by yijhuang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../include/ft_printf.h"
 
-int		get_width_precision(const char *restrict *format, int *width, int *precision)
+int		get_width_precision(const char *restrict *format, int *width, int *precision, va_list *ap)
 //获得字符串内的最小显示宽度和精度
 {
 	int	num;
@@ -21,20 +21,37 @@ int		get_width_precision(const char *restrict *format, int *width, int *precisio
 
 	num = 0;
 	more = 0;
-	while (ft_isdigit(**format)) //先看字符串内有没有数字，因为这个数字就是最小显示宽度
+	if (ft_isdigit(**format))
 	{
-		num = num * 10 + (**format - '0');  //如果是的话，就把字符转换成数字，然后看后一位
+		while (ft_isdigit(**format)) //先看字符串内有没有数字，因为这个数字就是最小显示宽度
+		{
+			num = num * 10 + (**format - '0');  //如果是的话，就把字符转换成数字，然后看后一位
+			(*format)++;
+		}
+	}
+	else if (**format == '*')
+	{
+		num = va_arg(*ap, int);
 		(*format)++;
 	}
+
 	if (num && (*width = num)) //如果最小显示宽度不为0，同时赋值给spec成功.more就是1，代表获得最小显示宽度数字成功
 		more = 1;
 	if (**format == '.') //如果字符串内有.的话
 	{
 		(*format)++;
 		num = 0; //重置，重新使用这个数字
-		while (ft_isdigit(**format))
+		if (ft_isdigit(**format))
 		{
-			num = num * 10 + (**format - '0');
+			while (ft_isdigit(**format))
+			{
+				num = num * 10 + (**format - '0');
+				(*format)++;
+			}
+		}
+		else if (**format == '*')
+		{
+			num = va_arg(*ap, int);
 			(*format)++;
 		}
 		*precision = num; //获得精度数字.precision (-1的时候代表没有'.'),(0的时候代表有'.'，但是后面没有数字）
@@ -84,7 +101,7 @@ int		print_a_arg(const char *restrict *format, va_list *ap, int (*dispatch[])(),
 	{
 		more = 0; //如果以下这些函数都没有返回值的话，说明%之后这个字符没有任何的数据类型可以对上，可以认为就是个普通字符
 		more += get_flags(format, spec->flags); //获得字符串内的flags字符
-		more += get_width_precision(format, &spec->width, &spec->precision); //获得字符串内的最小显示宽度和精度
+		more += get_width_precision(format, &spec->width, &spec->precision, ap); //获得字符串内的最小显示宽度和精度
 		more += get_len_modifier(format, spec->flags);  //因为length_modifier也是字符类型标示，所以也存在flags里
 	} //more这个数字累加的值会显示一些特性
 	if ((conv = get_conv_spec(format, spec->flags)) == 0)

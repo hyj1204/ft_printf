@@ -6,7 +6,7 @@
 /*   By: yijhuang <yijhuang@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/22 22:21:00 by yijhuang          #+#    #+#             */
-/*   Updated: 2019/06/07 02:11:04 by yijhuang         ###   ########.fr       */
+/*   Updated: 2019/07/13 22:49:21 by yijhuang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ int	main(void)
 	double double_num2;
 	long double ldouble_min;
 	long double ldouble_num;
+	int size;
+	int size2;
 
 	c = 'c';
 	b = 'b';
@@ -54,12 +56,15 @@ int	main(void)
 	llong_min = -9223372036854775808;
 	llong_max = 9223372036854775807;
 	
+	
 	float_min = 0.000000;
 	float_num = 20.1234;
 	double_num = 20.123456;
 	double_num2 = -20.123456;
 	ldouble_min = 0.000000;
 	ldouble_num = 12345678.0006;
+	size = 10;
+	size2 = 8;
 	
 	ft_printf("char:\n");
 	ft_printf("char+str(%%-2c%%04c%%6s) = %-2c%04c%6s\n", c, a, "block");
@@ -180,6 +185,22 @@ int	main(void)
 	printf("%.4o\n", 42);
 	ft_printf("%.ld\n", -12);
 	printf("%.ld\n", -12);
+	//add flag '*'
+	ft_printf("%-*s\n", size, "12345");
+	ft_printf("****");
+	ft_printf("%-*7s", size, "12345");
+	ft_printf("###\n");
+	ft_printf("%-*s.*s\n", size, "12345", size, "123.123");
+	ft_printf("%-.*s", size2, "12345.123");
+	ft_printf("****\n");
+
+	printf("%-*s\n", size, "12345");
+	printf("****");
+	printf("%-*7s", size, "12345");
+	printf("###\n");
+	printf("%-*s.*s\n", size, "12345", size, "123.123");
+	printf("%-.*s", size2, "12345.123");
+	printf("****\n");
 	
 	return (0);
 }
